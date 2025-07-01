@@ -1,29 +1,26 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import routes from '../routes/routes.js';
-import mongoose from 'mongoose';
-import serverless from 'serverless-http';
+import routes from '../routes/route.js'; // rotas externas
+import { createServer } from 'http';
 
-const app = express();
+app.use(express.urlencoded({extended:true}))
+app.set('view engine', 'ejs')
 
-app.use(express.urlencoded({ extended: true }));
-app.set('view engine', 'ejs');
+import{fileURLToPath} from 'url'
+import{dirname} from 'path'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __filename=fileURLToPath(import.meta.url)
+const __dirname= dirname(__filename)
+app.use(express.static(__dirname + '/public'))
 
-app.use(express.static(join(__dirname, '../public')));
-app.set('views', join(__dirname, '../views'));
+import routes from "./routes/routes.js"
 
-const url = "mongodb+srv://aluno1:aluno1@cluster0.9fgzz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
+import mongoose from 'mongoose'
+const url = "mongodb+srv://aluno1:aluno1@cluster0.9fgzz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 mongoose.connect(url)
-  .then(() => console.log("MongoDB conectado com sucesso!"))
-  .catch(err => console.error("Erro ao conectar no MongoDB:", err));
+console.log(mongoose.connect)
 
-app.use(routes);
+app.use(routes)
 
-// ⚠️ Sem app.listen()
-// Exporta handler pra Vercel
-export const handler = serverless(app);
+app.listen(3000)
