@@ -30,4 +30,14 @@ app.use(routes);
 
 // ⚠️ NÃO usa app.listen() aqui!
 // Exporta handler serverless pra Vercel
+import fs from 'fs';
+
+// Testa se a view existe
+const indexViewPath = join(__dirname, '../views/index.ejs');
+if (fs.existsSync(indexViewPath)) {
+  console.log("✅ index.ejs encontrado");
+} else {
+  console.error("❌ index.ejs NÃO encontrado no caminho:", indexViewPath);
+}
+
 export const handler = serverless(app);
