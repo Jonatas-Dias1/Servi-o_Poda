@@ -1,7 +1,8 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import routes from '../routes/routes.js';
+import route from '../routes/routes.js';
+
 import mongoose from 'mongoose';
 import serverless from 'serverless-http';
 import fs from 'fs';
@@ -26,7 +27,7 @@ mongoose.connect(url)
   .catch(err => console.error("❌ Erro ao conectar no MongoDB:", err));
 
 // Usa rotas
-app.use(routes);
+app.use(route);
 
 // Testa se view index existe
 const indexViewPath = join(__dirname, '../views/index.ejs');
