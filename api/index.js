@@ -1,9 +1,10 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import routes from '../routes/route.js';
+import routes from '../routes/routes.js';
 import mongoose from 'mongoose';
 import serverless from 'serverless-http';
+import fs from 'fs';
 
 // Cria app express
 const app = express();
@@ -11,14 +12,13 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
-// Define caminhos de diretório
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 app.use(express.static(join(__dirname, '../public')));
 app.set('views', join(__dirname, '../views'));
 
-// Configura conexão MongoDB
+// Conexão MongoDB
 const url = process.env.MONGO_URL || "mongodb+srv://aluno1:aluno1@cluster0.9fgzz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(url)
@@ -28,11 +28,7 @@ mongoose.connect(url)
 // Usa rotas
 app.use(routes);
 
-// ⚠️ NÃO usa app.listen() aqui!
-// Exporta handler serverless pra Vercel
-import fs from 'fs';
-
-// Testa se a view existe
+// Testa se view index existe
 const indexViewPath = join(__dirname, '../views/index.ejs');
 if (fs.existsSync(indexViewPath)) {
   console.log("✅ index.ejs encontrado");
@@ -40,4 +36,5 @@ if (fs.existsSync(indexViewPath)) {
   console.error("❌ index.ejs NÃO encontrado no caminho:", indexViewPath);
 }
 
-export const handler = serverless(app);
+// Exporta o handler default para o Vercel
+export default serverless(app);
